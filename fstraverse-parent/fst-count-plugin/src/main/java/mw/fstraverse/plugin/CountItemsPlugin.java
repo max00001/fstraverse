@@ -1,6 +1,7 @@
 package mw.fstraverse.plugin;
 
-import java.util.logging.Logger;
+//TODO remove commented logger
+//import java.util.logging.Logger;
 
 import mw.fstraverse.tool.FProcReport;
 import mw.fstraverse.tool.FSPlugin;
@@ -13,13 +14,13 @@ public class CountItemsPlugin implements FSPlugin {
     
     @Override
     public FSProcessor newFSProcessor() {
-        //logger.info("new FSProcessor for COUNT");
+//        logger.info("new FSProcessor for COUNT");
         return new CountItemsFSP();
     }
 
     @Override
     public FProcReport newFPReport() {
-        //logger.info("new FProcReport for COUNT");
+//        logger.info("new FProcReport for COUNT");
         return new CountItemsReport();
     }
 

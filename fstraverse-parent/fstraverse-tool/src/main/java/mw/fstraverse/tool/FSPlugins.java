@@ -18,9 +18,9 @@ public class FSPlugins {
     public enum FS_PLUGIN_TYPE {
         SAMPLE("file:fst-sample-plugin.jar",
                 "mw.fstraverse.plugin.SamplePlugin"), 
-        COUNT("file:fst-size-plugin.jar", 
+        SIZE("file:fst-size-plugin.jar", 
                 "mw.fstraverse.plugin.SizePlugin"), 
-        SIZE("file:fst-count-plugin.jar", 
+        COUNT("file:fst-count-plugin.jar", 
                 "mw.fstraverse.plugin.CountItemsPlugin");
 
         private URL jarURL;
@@ -55,21 +55,28 @@ public class FSPlugins {
     }
 
     public static FSProcessor newFSProcessor(FS_PLUGIN_TYPE type) {
-        //return loadPlugin(type).newFSProcessor();
-        FSProcessor fsProcessor = loadPlugin(type).newFSProcessor();
-        if (fsProcessor == null) {
-            logger.severe("fsProcessor is null for " + type);
-        }
-        return fsProcessor;
+        return loadPlugin(type).newFSProcessor();
+//        FSProcessor fsProcessor = loadPlugin(type).newFSProcessor();
+//        if (fsProcessor == null) {
+//            logger.severe("fsProcessor is null for " + type);
+//        }
+//        return fsProcessor;
     }
     
     public static FProcReport newFProcReport(FS_PLUGIN_TYPE type) {
-        //return loadPlugin(type).newFPReport();
-        FProcReport fProcReport = loadPlugin(type).newFPReport();
-        if (fProcReport == null) {
-            logger.severe("fProcReport is null for " + type);
-        }
-        return fProcReport;
+        return loadPlugin(type).newFPReport();
+//        FSPlugin plugin = loadPlugin(type);
+//        if (plugin == null) {
+//            logger.severe("Plugin is not available for " + type);
+//        } else {
+//            logger.info("Requested report-object for " + type + ". Plugin available. " + plugin.getClass());
+//        }
+//        
+//        FProcReport fProcReport = plugin.newFPReport();
+//        if (fProcReport == null) {
+//            logger.severe("fProcReport is null for " + type);
+//        }
+//        return fProcReport;
     }
 
     private static FSPlugin loadPlugin(FS_PLUGIN_TYPE type) {
