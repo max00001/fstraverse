@@ -16,9 +16,6 @@ import mw.fstraverse.tool.FSInfoStorage;
 
 public class CountItemsReport implements FProcReport {
 
-    public CountItemsReport() {
-        // TODO Auto-generated constructor stub
-    }
 
     @Override
     public void aggregate() {
@@ -55,7 +52,7 @@ public class CountItemsReport implements FProcReport {
 
             xtw.writeStartElement("body");
             xtw.writeStartElement("p");
-            xtw.writeCharacters("It's a report about");
+            xtw.writeCharacters("It's a report about ");
             xtw.writeStartElement("a");
             xtw.writeAttribute("href", file.toURI().toString());
             xtw.writeCharacters(file.getAbsolutePath());
