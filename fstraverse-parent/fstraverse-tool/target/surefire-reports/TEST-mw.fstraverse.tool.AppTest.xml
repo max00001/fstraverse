@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite tests="1" failures="0" name="mw.fstraverse.tool.AppTest" time="0.002" errors="0" skipped="0">
+  <properties>
+    <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
+    <property name="sun.boot.library.path" value="C:\env\jdk1.8.0_25\jre\bin"/>
+    <property name="java.vm.version" value="25.25-b02"/>
+    <property name="user.country.format" value="RU"/>
+    <property name="java.vm.vendor" value="Oracle Corporation"/>
+    <property name="java.vendor.url" value="http://java.oracle.com/"/>
+    <property name="path.separator" value=";"/>
+    <property name="guice.disable.misplaced.annotation.check" value="true"/>
+    <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM"/>
+    <property name="file.encoding.pkg" value="sun.io"/>
+    <property name="user.script" value=""/>
+    <property name="user.country" value="US"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="sun.os.patch.level" value="Service Pack 1"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="user.dir" value="D:\maxwhite\Projects\fstraverse-parent"/>
+    <property name="java.runtime.version" value="1.8.0_25-b18"/>
+    <property name="java.awt.graphicsenv" value="sun.awt.Win32GraphicsEnvironment"/>
+    <property name="java.endorsed.dirs" value="C:\env\jdk1.8.0_25\jre\lib\endorsed"/>
+    <property name="os.arch" value="amd64"/>
+    <property name="java.io.tmpdir" value="C:\Users\maxwhite\AppData\Local\Temp\"/>
+    <property name="line.separator" value="
+"/>
+    <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+    <property name="user.variant" value=""/>
+    <property name="os.name" value="Windows 7"/>
+    <property name="classworlds.conf" value="D:\maxwhite\Projects\.metadata\.plugins\org.eclipse.m2e.launching\launches\m2conf1937547297082389136.tmp"/>
+    <property name="sun.jnu.encoding" value="Cp1251"/>
+    <property name="java.library.path" value="C:\env\jdk1.8.0_25\bin;C:\Windows\Sun\Java\bin;C:\Windows\system32;C:\Windows;C:/env/jre8/bin/server;C:/env/jre8/bin;C:/env/jre8/lib/amd64;C:\ProgramData\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\ATI Technologies\ATI.ACE\Core-Static;C:\env\jdk1.8.0_25;C:\env\jdk1.8.0_25\bin;C:\env\jre8\bin;D:\Programs\eclipse;C:\env\apache-ant\bin;C:\env\apache-maven\bin;C:\Users\maxwhite\AppData\Local\Pandoc\;D:\Programs\eclipse;;."/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="java.class.version" value="52.0"/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="os.version" value="6.1"/>
+    <property name="user.home" value="C:\Users\maxwhite"/>
+    <property name="user.timezone" value="Europe/Moscow"/>
+    <property name="java.awt.printerjob" value="sun.awt.windows.WPrinterJob"/>
+    <property name="java.specification.version" value="1.8"/>
+    <property name="file.encoding" value="Cp1251"/>
+    <property name="user.name" value="maxwhite"/>
+    <property name="java.class.path" value="/D:/Programs/eclipse/plugins/org.eclipse.m2e.maven.runtime_1.5.0.20140605-2032/jars/plexus-classworlds-2.5.1.jar"/>
+    <property name="org.slf4j.simpleLogger.defaultLogLevel" value="info"/>
+    <property name="java.vm.specification.version" value="1.8"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="java.home" value="C:\env\jdk1.8.0_25\jre"/>
+    <property name="sun.java.command" value="org.codehaus.plexus.classworlds.launcher.Launcher -B package"/>
+    <property name="java.specification.vendor" value="Oracle Corporation"/>
+    <property name="user.language" value="en"/>
+    <property name="user.language.format" value="ru"/>
+    <property name="awt.toolkit" value="sun.awt.windows.WToolkit"/>
+    <property name="java.vm.info" value="mixed mode"/>
+    <property name="java.version" value="1.8.0_25"/>
+    <property name="java.ext.dirs" value="C:\env\jdk1.8.0_25\jre\lib\ext;C:\Windows\Sun\Java\lib\ext"/>
+    <property name="sun.boot.class.path" value="C:\env\jre8\lib\resources.jar;C:\env\jre8\lib\rt.jar;C:\env\jre8\lib\jsse.jar;C:\env\jre8\lib\jce.jar;C:\env\jre8\lib\charsets.jar;C:\env\jre8\lib\jfr.jar;C:\env\jre8\lib\ext\access-bridge-64.jar;C:\env\jre8\lib\ext\cldrdata.jar;C:\env\jre8\lib\ext\dnsns.jar;C:\env\jre8\lib\ext\jaccess.jar;C:\env\jre8\lib\ext\jfxrt.jar;C:\env\jre8\lib\ext\localedata.jar;C:\env\jre8\lib\ext\nashorn.jar;C:\env\jre8\lib\ext\sunec.jar;C:\env\jre8\lib\ext\sunjce_provider.jar;C:\env\jre8\lib\ext\sunmscapi.jar;C:\env\jre8\lib\ext\sunpkcs11.jar;C:\env\jre8\lib\ext\zipfs.jar"/>
+    <property name="java.vendor" value="Oracle Corporation"/>
+    <property name="maven.home" value="D:\maxwhite\Projects\fstraverse-parent\EMBEDDED"/>
+    <property name="file.separator" value="\"/>
+    <property name="java.vendor.url.bug" value="http://bugreport.sun.com/bugreport/"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="sun.desktop" value="windows"/>
+    <property name="sun.cpu.isalist" value="amd64"/>
+  </properties>
+  <testcase classname="mw.fstraverse.tool.AppTest" name="testApp" time="0.002"/>
+</testsuite>
