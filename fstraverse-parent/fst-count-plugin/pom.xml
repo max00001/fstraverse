@@ -10,15 +10,15 @@
   <description>count plugin for fstransfer</description>
   <dependencies>
   	<dependency>
+  		<groupId>mw.fstraverse</groupId>
+  		<artifactId>fstraverse-tool</artifactId>
+  		<version>0.0.1</version>
+  	</dependency>
+  	<dependency>
   		<groupId>junit</groupId>
   		<artifactId>junit</artifactId>
   		<version>4.12</version>
   		<scope>test</scope>
-  	</dependency>
-  	<dependency>
-  		<groupId>mw.fstraverse</groupId>
-  		<artifactId>fstraverse-tool</artifactId>
-  		<version>0.0.1</version>
   	</dependency>
   </dependencies>
 </project>

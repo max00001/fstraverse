@@ -14,7 +14,6 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-import mw.fstraverse.tool.FSPlugins.FS_PLUGIN_TYPE;
 
 /**
  * application to start the tool
@@ -46,11 +45,14 @@ public class App {
             e.printStackTrace();
         }
         ToolCover toolCover = new ToolCover();
+        ScenarioConfig scenario = toolCover.initScenario();
+        toolCover.runScenario(scenario);
 
-        FSProcessor sampleFSProcessor = FSPlugins
-                .newFSProcessor(FS_PLUGIN_TYPE.SAMPLE);
-        FSProcessor sizeFSP = FSPlugins.newFSProcessor(FS_PLUGIN_TYPE.SIZE);
-        FSProcessor countFSP = FSPlugins.newFSProcessor(FS_PLUGIN_TYPE.COUNT);
+        //TODO Read the plugins (and overall scenario) from xml
+       /* FSProcessor sampleFSProcessor = FSPlugins
+                .getInstance().newFSProcessor("Sample");
+        FSProcessor sizeFSP = FSPlugins.getInstance().newFSProcessor("Size");
+        FSProcessor countFSP = FSPlugins.getInstance().newFSProcessor("Count");
 
         File file = new File(props.getProperty("dir.to.traverse",
                 "d:/SampleDir"));
@@ -62,7 +64,9 @@ public class App {
 
         toolCover.traverse(file, list);
         
-        toolCover.report(FS_PLUGIN_TYPE.COUNT, file);
+        toolCover.report("Count", file);*/
+        
+        
 
         logger.info("Main complete");
 

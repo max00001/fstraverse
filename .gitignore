@@ -10,3 +10,6 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+fstraverse-parent/fst-count-plugin/.settings/org.eclipse.mylyn.tasks.ui.prefs
+fstraverse-parent/fstraverse-tool/.settings/org.eclipse.mylyn.tasks.ui.prefs
+fstraverse-parent/.settings/org.eclipse.mylyn.tasks.ui.prefs

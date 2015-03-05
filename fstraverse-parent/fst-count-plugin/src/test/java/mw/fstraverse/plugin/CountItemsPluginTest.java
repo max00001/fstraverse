@@ -22,7 +22,7 @@ public class CountItemsPluginTest {
     }
 
     @Test
-    public void newFSProcessorTest() {
+    public void testNewFSProcessor() {
         FSProcessor fsProcessor = countItemsPlugin.newFSProcessor();
         assertNotNull("COUNT fsProcessor is not created ", fsProcessor);
     }

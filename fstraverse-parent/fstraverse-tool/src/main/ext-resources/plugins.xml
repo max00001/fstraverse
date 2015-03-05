@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Plugins [
+    <!ELEMENT plugin (id, jarURI, pluginClass)>
+    <!ELEMENT id (#PCDATA)>
+    <!ELEMENT jarURI (#PCDATA)>
+    <!ELEMENT pluginClass (#PCDATA)>
+]>
+
+<plugins>
+    <plugin>
+        <id>Sample</id>
+        <jarURI>file:fst-sample-plugin.jar</jarURI>
+        <pluginClass>mw.fstraverse.plugin.SamplePlugin</pluginClass>
+    </plugin>
+    <plugin>
+        <id>Size</id>
+        <jarURI>file:fst-size-plugin.jar</jarURI>
+        <pluginClass>mw.fstraverse.plugin.SizePlugin</pluginClass>
+    </plugin>
+    <plugin>
+        <id>Count</id>
+        <jarURI>file:fst-count-plugin.jar</jarURI>
+        <pluginClass>mw.fstraverse.plugin.CountItemsPlugin</pluginClass>
+    </plugin>
+</plugins>
