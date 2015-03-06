@@ -11,6 +11,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import mw.fstraverse.tool.FPInfoStorage;
 import mw.fstraverse.tool.FProcReport;
 import mw.fstraverse.tool.FProcResult;
 import mw.fstraverse.tool.FSInfoStorage;
@@ -51,21 +52,24 @@ public class CountItemsReport implements FProcReport {
             xtw.setPrefix("", "http://www.w3.org/TR/REC-html40");
             xtw.writeStartElement("html");
             //xtw.writeNamespace("html", "http://www.w3.org/TR/REC-html40");
-            xtw.writeStartElement("head");
-            xtw.writeStartElement("title");
-            xtw.writeCharacters(file.getName());
-            xtw.writeEndElement();
-            xtw.writeEndElement();
-
-            xtw.writeStartElement("body");
-            xtw.writeStartElement("p");
-            xtw.writeCharacters("It's a report about ");
-            xtw.writeStartElement("a");
-            xtw.writeAttribute("href", file.toURI().toString());
-            xtw.writeCharacters(file.getAbsolutePath());
-            xtw.writeEndElement();
-            xtw.writeEndElement();
-            xtw.writeEndElement();
+                xtw.writeStartElement("head");
+                    xtw.writeStartElement("title");
+                        xtw.writeCharacters(file.getName());
+                    xtw.writeEndElement();
+                xtw.writeEndElement();
+                xtw.writeStartElement("body");
+                    xtw.writeStartElement("h1");
+                        xtw.writeCharacters("It's a report about ");
+                        xtw.writeStartElement("a");
+                            xtw.writeAttribute("href", file.toURI().toString());
+                            xtw.writeCharacters(file.getAbsolutePath());
+                        xtw.writeEndElement();
+                    xtw.writeEndElement();
+                    xtw.writeStartElement("p");                        
+                        FProcResult result = fsInfoStorage.get(file).get(CountItemsFSP.class);
+                        xtw.writeCharacters(result.getPrintableForm());
+                    xtw.writeEndElement();
+                xtw.writeEndElement();
             xtw.writeEndElement();
             xtw.writeEndDocument();
 
