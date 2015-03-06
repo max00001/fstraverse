@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.Calendar;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -30,15 +31,21 @@ public class CountItemsReport implements FProcReport {
     }
 
     @Override
-    public String report(FSInfoStorage fsInfoStorage, File file) {
-        // TODO Auto-generated method stub
-        String tmpDir = System.getProperty("java.io.tmpdir");
-        Path reportFile = FileSystems.getDefault().getPath(tmpDir, "report.html");
+    public String report(FSInfoStorage fsInfoStorage, File file, String outputFileName) {
+        File outputFile = new File(outputFileName);
+        if (outputFile.isDirectory() || !outputFile.exists()) {
+            // add report.html as filename
+            if (!outputFile.exists()) {
+                outputFile.mkdirs();
+            }
+            String localFilename = "report-" + Calendar.getInstance().getTimeInMillis() + ".html";
+            outputFile = FileSystems.getDefault().getPath(outputFile.getAbsolutePath(), localFilename).toFile();
+        }
         
         XMLOutputFactory xof =  XMLOutputFactory.newInstance();
         XMLStreamWriter xtw;
         try {
-            xtw = xof.createXMLStreamWriter(new FileOutputStream(reportFile.toFile()), "utf-8");
+            xtw = xof.createXMLStreamWriter(new FileOutputStream(outputFile),"utf-8");
             xtw.writeComment("count items report");
             xtw.writeStartDocument("utf-8","1.0");
             xtw.setPrefix("", "http://www.w3.org/TR/REC-html40");
@@ -72,7 +79,7 @@ public class CountItemsReport implements FProcReport {
             e.printStackTrace();
         }
         
-        return reportFile.toString();
+        return outputFile.toString();
     }
 
 }

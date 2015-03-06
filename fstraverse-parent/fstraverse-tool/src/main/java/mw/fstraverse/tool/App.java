@@ -48,34 +48,23 @@ public class App {
         ScenarioConfig scenario = toolCover.initScenario();
         toolCover.runScenario(scenario);
 
-        //TODO Read the plugins (and overall scenario) from xml
-       /* FSProcessor sampleFSProcessor = FSPlugins
-                .getInstance().newFSProcessor("Sample");
-        FSProcessor sizeFSP = FSPlugins.getInstance().newFSProcessor("Size");
-        FSProcessor countFSP = FSPlugins.getInstance().newFSProcessor("Count");
-
-        File file = new File(props.getProperty("dir.to.traverse",
-                "d:/SampleDir"));
-
-        List<FSProcessor> list = new ArrayList<>(3);
-        list.add(sampleFSProcessor);
-        list.add(sizeFSP);
-        list.add(countFSP);
-
-        toolCover.traverse(file, list);
-        
-        toolCover.report("Count", file);*/
-        
-        
-
-        logger.info("Main complete");
+        logger.info("App execution complete.");
 
     }
 
+    private static FileInputStream getConfigFile() throws FileNotFoundException {
+        File file = new File("config.properties");
+        if (!file.exists()) {
+            file = new File("src/main/ext-resources/config.properties");
+        }
+        
+        return new FileInputStream(file);
+    }
+    
     private static void loadProperties() {
         InputStream inputStream;
         try {
-            inputStream = new FileInputStream("config.properties");
+            inputStream = getConfigFile();
             props.load(inputStream);
         } catch (FileNotFoundException e) {
             e.printStackTrace();

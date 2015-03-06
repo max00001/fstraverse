@@ -16,8 +16,9 @@ import mw.fstraverse.tool.FSPlugins.FSPluginInfo;
 import mw.fstraverse.tool.ScenarioConfig.Step;
 
 /**
- * main class of the tool use traverse methods to work with directories and
- * processors
+ * main class of the tool 
+ * reads scenario.xml config
+ * runs the commands from it
  * 
  * @author maxwhite
  *
@@ -25,14 +26,14 @@ import mw.fstraverse.tool.ScenarioConfig.Step;
 public class ToolCover {
     private static Logger logger = Logger.getLogger(ToolCover.class
             .getPackage().getName());
-    ConcurrentHashMap<File, FSInfoStorage> storages = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<File, FSInfoStorage> storages = new ConcurrentHashMap<>();
 
     // FSInfoStorage dirTree = new FSInfoStorageImpl();
 
     /**
-     * traverses recursively through the root file if it's a directory and its
-     * sub-directories starts the processor for each of discovered elements
-     * (directory)
+     * 
+     * runs a processor for dirTree
+     * 
      * 
      * @param rootFile
      * @param fsProcessor
@@ -46,11 +47,10 @@ public class ToolCover {
                 // do nothing in this case, this processor doesn't produce a
                 // result
             } else {
-                // entry.getValue().put(fsProcessor.getClass(), fpResult);
                 dirTree.putResult(file, fsProcessor.getClass(), fpResult);
             }
         }
-        // Print the results to log
+        // Print the results to log - temporary for debug purposes
         printResults(dirTree);
 
     }
@@ -70,37 +70,6 @@ public class ToolCover {
         
     }
 
-/*    public void traverse(File rootFile, List<FSProcessor> fsProcessorList) {
-        // DONE build tree
-        FSInfoStorage dirTree = getDirTree(rootFile);
-        // DONE run processors from the list one by one for the folder
-        for (FSProcessor fsProcessor : fsProcessorList) {
-            for (File file : dirTree.getFileIterator()) {
-                FProcResult fpResult = fsProcessor.process(file);
-                if (fpResult == null) {
-                    // do nothing in this case, this processor doesn't produce a
-                    // result
-                } else {
-                    // entry.getValue().put(fsProcessor.getClass(), fpResult);
-                    dirTree.putResult(file, fsProcessor.getClass(), fpResult);
-                }
-            }
-        }
-
-        // Print the results to log
-        printResults(dirTree);
-
-        for (FSProcessor fsProcessor : fsProcessorList) {
-            try {
-                logger.info("aggregating for " + fsProcessor.getClass());
-                dirTree.aggregate(fsProcessor.getClass());
-            } catch (FSInfoStorageException e) {
-                logger.log(Level.SEVERE, e.getMessage(), e);
-            }
-        }
-        logger.info("--aggregated state");
-        printResults(dirTree);
-    }*/
 
     // TODO - too much info about storage internals, refactor it (almost done)
     private void printResults(FSInfoStorage dirTree) {
@@ -116,6 +85,7 @@ public class ToolCover {
         if (dirTree == null) {
             dirTree = new FSInfoStorageImpl();
             addToDirTree(dirTree, rootFile, null);
+            storages.put(rootFile, dirTree);
         }
         return dirTree;
     }
@@ -138,25 +108,21 @@ public class ToolCover {
 
     }
 
-    // private void aggregate(Class<? extends FSProcessor> cl) {
-    // //results aggregator:
-    // // traversing from leaf nodes
-    // // adds child results to the parent result
-    //
-    //
-    // dirTree.aggregate(cl);
-    // }
 
-    public void report(File file, String type) {
+    public void report(File file, String type, String outputDir) {
         FSInfoStorage dirTree = storages.get(file);
         if (dirTree == null) {
             logger.warning("cannot compile report " + type + " for " + file
                     + " as there is no data storage for this directory.");
+            logger.warning("Storage contains " + storages.size() + " trees.");
+            for (File f : storages.keySet()) {
+                logger.info("  for - " + f.getName());
+            }
         } else {
             FProcReport fProcReport = FSPlugins.getInstance().newFProcReport(
                     type);
             if (fProcReport != null) {
-                String report = fProcReport.report(dirTree, file);
+                String report = fProcReport.report(dirTree, file, outputDir);
                 logger.info("Report: " + report);
             } else {
                 logger.warning("plugin-reporter is not defined for " + type);
@@ -164,10 +130,23 @@ public class ToolCover {
         }
 
     }
+    
+    private File getScenarioConfigFile() {
+        File file = new File("scenario.xml");
+        if (!file.exists()) {
+            file = new File("src/main/ext-resources/scenario.xml");
+        }
+        if (!file.exists()) {
+            //TODO exception
+            logger.warning("Scenario config file doesn't exist.");
+        }
+        return file;
+    }
+
 
     public ScenarioConfig initScenario() {
         // TODO load correct file
-        File file = new File("scenario.xml");
+        File file = getScenarioConfigFile();
         JAXBContext jaxbContext;
         try {
             jaxbContext = JAXBContext.newInstance(ScenarioConfig.class);
@@ -200,7 +179,7 @@ public class ToolCover {
                 process(file, FSPlugins.getInstance().newFSProcessor(type));
                 break;
             case "Report":
-                report(file, type);
+                report(file, type, outputDir);
                 break;
             case "Aggregate":
                 aggregate(file, FSPlugins.getInstance().newFSProcessor(type));

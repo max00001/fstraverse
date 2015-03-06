@@ -63,10 +63,25 @@ public class FSPlugins {
     private FSPlugins() {
         initPluginsList();
     }
+    
+    private File getPluginsConfigFile() {
+        File file = new File("plugins.xml");
+        if (!file.exists()) {
+            file = new File("src/main/ext-resources/plugins.xml");
+        }
+        if (!file.exists()) {
+            //TODO exception
+            logger.warning("Plugins config file doesn't exist.");
+        }
+        return file;
+    }
 
+    /**
+     * load xml list of plugins
+     * write to pluginsInfoMap
+     */
     private void initPluginsList() {
-        // TODO load xml list of plugins
-        File file = new File("D:/tmp/plugins.xml");
+        File file = getPluginsConfigFile();
         JAXBContext jaxbContext;
         try {
             jaxbContext = JAXBContext.newInstance(PluginsConfig.class);
@@ -87,9 +102,6 @@ public class FSPlugins {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
-        // write to pluginsInfoMap
-
     }
 
     public static synchronized FSPlugins getInstance() {
