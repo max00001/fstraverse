@@ -12,12 +12,12 @@ import java.util.Set;
  *
  */
 public interface FPInfoStorage {
-    public FProcResult get(Class<? extends FSProcessor> cl);
+    public FProcResult get(String type);
 
-    public FProcResult put(Class<? extends FSProcessor> cl,
+    public FProcResult put(String type,
             FProcResult fProcResult);
 
-    public Set<Map.Entry<Class<? extends FSProcessor>, FProcResult>> getIterator();
+    public Set<Map.Entry<String, FProcResult>> getIterator();
 
     public File getParentNode();
 

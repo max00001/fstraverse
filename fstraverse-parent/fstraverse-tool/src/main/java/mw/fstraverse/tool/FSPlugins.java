@@ -121,7 +121,7 @@ public class FSPlugins {
     }
 
     public FProcReport newFProcReport(String type) {
-        return loadPlugin(type).newFPReport();
+        return loadPlugin(type).newFPReport(type);
         // FSPlugin plugin = loadPlugin(type);
         // if (plugin == null) {
         // logger.severe("Plugin is not available for " + type);

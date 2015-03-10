@@ -12,7 +12,7 @@ public class SizePlugin implements FSPlugin {
     }
 
     @Override
-    public FProcReport newFPReport() {
+    public FProcReport newFPReport(String type) {
         // TODO Auto-generated method stub
         return null;
     }

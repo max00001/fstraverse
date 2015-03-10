@@ -27,6 +27,7 @@ public class ToolCover {
     private static Logger logger = Logger.getLogger(ToolCover.class
             .getPackage().getName());
     private ConcurrentHashMap<File, FSInfoStorage> storages = new ConcurrentHashMap<>();
+    private FSPlugins fsPlugins = FSPlugins.getInstance(); //for testing purposes this is a class member
 
     // FSInfoStorage dirTree = new FSInfoStorageImpl();
 
@@ -39,15 +40,15 @@ public class ToolCover {
      * @param fsProcessor
      * @return nothing
      */
-    public void process(File rootFile, FSProcessor fsProcessor) {
+    public void process(File rootFile, String type) {
         FSInfoStorage dirTree = getDirTree(rootFile);
         for (File file : dirTree.getFileIterator()) {
-            FProcResult fpResult = fsProcessor.process(file);
+            FProcResult fpResult = fsPlugins.newFSProcessor(type).process(file);
             if (fpResult == null) {
                 // do nothing in this case, this processor doesn't produce a
                 // result
             } else {
-                dirTree.putResult(file, fsProcessor.getClass(), fpResult);
+                dirTree.putResult(file, type, fpResult);
             }
         }
         // Print the results to log - temporary for debug purposes
@@ -55,14 +56,14 @@ public class ToolCover {
 
     }
     
-    public void aggregate(File rootFile, FSProcessor fsProcessor) {
+    public void aggregate(File rootFile, String type) {
         FSInfoStorage dirTree = storages.get(rootFile);
         if (dirTree == null) {
-            logger.warning("cannot aggregate report " + fsProcessor + " for " + rootFile
+            logger.warning("cannot aggregate report " + type + " for " + rootFile
                     + " as there is no data storage for this directory.");
         } else {
             try {
-                dirTree.aggregate(fsProcessor.getClass());
+                dirTree.aggregate(type);
             } catch (FSInfoStorageException e) {
                 logger.log(Level.SEVERE, e.getMessage(), e);
             }
@@ -119,7 +120,7 @@ public class ToolCover {
                 logger.info("  for - " + f.getName());
             }
         } else {
-            FProcReport fProcReport = FSPlugins.getInstance().newFProcReport(
+            FProcReport fProcReport = fsPlugins.newFProcReport(
                     type);
             if (fProcReport != null) {
                 String report = fProcReport.report(dirTree, file, outputDir);
@@ -176,13 +177,13 @@ public class ToolCover {
             
             switch (step.getAction()) {
             case "Process":
-                process(file, FSPlugins.getInstance().newFSProcessor(type));
+                process(file, type);
                 break;
             case "Report":
                 report(file, type, outputDir);
                 break;
             case "Aggregate":
-                aggregate(file, FSPlugins.getInstance().newFSProcessor(type));
+                aggregate(file, type);
                 break;
 
             default:

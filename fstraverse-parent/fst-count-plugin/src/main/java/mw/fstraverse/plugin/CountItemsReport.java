@@ -18,6 +18,15 @@ import mw.fstraverse.tool.FSInfoStorage;
 
 public class CountItemsReport implements FProcReport {
 
+    String type;
+
+    private CountItemsReport() {
+    }
+
+    public CountItemsReport(String type) {
+        super();
+        this.type = type;
+    }
 
     @Override
     public void aggregate() {
@@ -66,7 +75,7 @@ public class CountItemsReport implements FProcReport {
                         xtw.writeEndElement();
                     xtw.writeEndElement();
                     xtw.writeStartElement("p");                        
-                        FProcResult result = fsInfoStorage.get(file).get(CountItemsFSP.class);
+                        FProcResult result = fsInfoStorage.get(file).get(type);
                         xtw.writeCharacters(result.getPrintableForm());
                     xtw.writeEndElement();
                 xtw.writeEndElement();

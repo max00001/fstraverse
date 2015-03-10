@@ -38,10 +38,10 @@ public class FSInfoStorageImpl implements FSInfoStorage {
     }
 
     @Override
-    public FProcResult putResult(File file, Class<? extends FSProcessor> cl,
+    public FProcResult putResult(File file, String type,
             FProcResult fProcResult) {
         FPInfoStorage value = dirTree.get(file);
-        return value.put(cl, fProcResult);
+        return value.put(type, fProcResult);
     }
 
     @Override
@@ -66,19 +66,19 @@ public class FSInfoStorageImpl implements FSInfoStorage {
     }
 
     @Override
-    public void aggregate(Class<? extends FSProcessor> cl) throws FSInfoStorageException {
+    public void aggregate(String type) throws FSInfoStorageException {
         for (Map.Entry<File, FPInfoStorage> entry : dirTree.descendingMap()
                 .entrySet()) {
             FPInfoStorage value = entry.getValue();
             if (value.getParentNode() != null) {
-                FProcResult childResult = value.get(cl);
+                FProcResult childResult = value.get(type);
                 if (childResult != null) {
                     FProcResult parentResult = dirTree.get(
-                            value.getParentNode()).get(cl);
+                            value.getParentNode()).get(type);
                     if (parentResult == null) {
                         // TODO ?exception
                         throw new FSInfoStorageException("Parent result of "
-                                + cl.getName() + " is not found for node "
+                                + type + " is not found for node "
                                 + entry.getKey().getName());
                     } else {
                         parentResult.aggregate(childResult);

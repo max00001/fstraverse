@@ -3,6 +3,7 @@ package mw.fstraverse.tool;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map.Entry;
@@ -12,12 +13,17 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.mockito.Mockito.*;
+
+
 public class ToolCoverTest {
 
     ToolCover toolCover;
+    FSPlugins mockFSPlugins;
     private File file;
     private String printableFormOfResult = "abc";
     FSInfoStorage dirTree;
+    String testType = "Test"; //plugin type for tests
     FSProcessor fsProcessor = new FSProcessor() {
 
         @Override
@@ -55,13 +61,26 @@ public class ToolCoverTest {
             };
         }
     };
-
+    FProcReport fpReport = mock(FProcReport.class);
+    
     @Before
     public void setUp() throws Exception {
         try {
             toolCover = new ToolCover();
+            
+            //TODO replace fsPlugins by a mock object
+            Field field = toolCover.getClass().getDeclaredField("fsPlugins");
+            field.setAccessible(true);
+            mockFSPlugins = mock(FSPlugins.class);
+            field.set(toolCover, mockFSPlugins); //implement mock
+            
+            //mock behavior
+            when(mockFSPlugins.newFSProcessor(testType)).thenReturn(fsProcessor);
+            when(mockFSPlugins.newFProcReport(testType)).thenReturn(fpReport);
+
+            
             file = new File(".");
-            toolCover.process(file, fsProcessor);
+            toolCover.process(file, testType);
 
             Method method;
             method = ToolCover.class
@@ -98,7 +117,7 @@ public class ToolCoverTest {
         try {
             assertTrue(dirTree.getIterator().size() > 0);
             assertEquals(file, dirTree.getRootFile());
-            Set<Entry<Class<? extends FSProcessor>, FProcResult>> rrr = dirTree
+            Set<Entry<String, FProcResult>> rrr = dirTree
                     .get(file).getIterator();
             String ttt = rrr.iterator().next().getValue().getPrintableForm();
             assertEquals(printableFormOfResult, ttt);
@@ -114,12 +133,13 @@ public class ToolCoverTest {
 
     @Test
     public void testAggregate() {
-        toolCover.aggregate(file, fsProcessor);
+        toolCover.aggregate(file, testType);
+        //nothing to assert in this implementation. Test just simple run without checks
     }
 
     @Test
     public void testReport() {
-        //toolCover.report(file, fsProcessor, System.getProperty("java.io.tmpdir"));
+        toolCover.report(file, testType, System.getProperty("java.io.tmpdir"));
         fail("Not yet implemented");
     }
 

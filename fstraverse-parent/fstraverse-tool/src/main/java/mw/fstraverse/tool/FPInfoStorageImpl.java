@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class FPInfoStorageImpl implements FPInfoStorage {
 
     
-    private Map<Class<? extends FSProcessor>, FProcResult> resMap;
+    private Map<String, FProcResult> resMap;
     private File parentNode;
 
 
@@ -38,20 +38,20 @@ public class FPInfoStorageImpl implements FPInfoStorage {
 
 
     @Override
-    public FProcResult get(Class<? extends FSProcessor> cl) {
-        return resMap.get(cl);
+    public FProcResult get(String type) {
+        return resMap.get(type);
     }
 
 
     @Override
-    public FProcResult put(Class<? extends FSProcessor> cl,
+    public FProcResult put(String type,
             FProcResult fProcResult) {
-        return resMap.put(cl, fProcResult);
+        return resMap.put(type, fProcResult);
     }
 
 
     @Override
-    public Set<Entry<Class<? extends FSProcessor>, FProcResult>> getIterator() {
+    public Set<Entry<String, FProcResult>> getIterator() {
         return resMap.entrySet();
     }
 
@@ -70,11 +70,11 @@ public class FPInfoStorageImpl implements FPInfoStorage {
         } else {
             result = "\tParent node: \"" + parentNode.getName() + "\"\n";
         }
-        for (Map.Entry<Class<? extends FSProcessor>, FProcResult> resultEntry : getIterator()) {
+        for (Map.Entry<String, FProcResult> resultEntry : getIterator()) {
             result +=
                     
-                    "\tClass: " + 
-                    resultEntry.getKey().getSimpleName() + 
+                    "\tProcessor: " + 
+                    resultEntry.getKey() + 
                     " \tResult: " + resultEntry.getValue().getPrintableForm() + "\n";
         }
         return result;

@@ -19,9 +19,9 @@ public class CountItemsPlugin implements FSPlugin {
     }
 
     @Override
-    public FProcReport newFPReport() {
+    public FProcReport newFPReport(String type) {
 //        logger.info("new FProcReport for COUNT");
-        return new CountItemsReport();
+        return new CountItemsReport(type);
     }
 
 }

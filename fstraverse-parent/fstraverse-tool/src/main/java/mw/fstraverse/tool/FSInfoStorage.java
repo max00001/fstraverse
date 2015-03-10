@@ -10,9 +10,9 @@ public interface FSInfoStorage {
     public Set<File> getDescFileIterator();
     public Set<File> getFileIterator();
     public FPInfoStorage put(File file, File parentNode);
-    public FProcResult putResult(File file, Class<? extends FSProcessor> cl, FProcResult fProcResult);
+    public FProcResult putResult(File file, String type, FProcResult fProcResult);
     public FPInfoStorage get(File file);
     public void clear();
     public File getRootFile();
-    public void aggregate(Class<? extends FSProcessor> cl) throws FSInfoStorageException;
+    public void aggregate(String type) throws FSInfoStorageException;
 }
