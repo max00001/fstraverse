@@ -1,10 +1,15 @@
 package mw.fstraverse.tool;
 
 import java.io.File;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,7 +17,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import mw.fstraverse.tool.FSPlugins.FSPluginInfo;
 import mw.fstraverse.tool.ScenarioConfig.Step;
 
 /**
@@ -28,6 +32,9 @@ public class ToolCover {
             .getPackage().getName());
     private ConcurrentHashMap<File, FSInfoStorage> storages = new ConcurrentHashMap<>();
     private FSPlugins fsPlugins = FSPlugins.getInstance(); //for testing purposes this is a class member
+    
+    
+    public CountDownLatch latch;
 
     // FSInfoStorage dirTree = new FSInfoStorageImpl();
 
@@ -95,16 +102,22 @@ public class ToolCover {
             File parentNode) {
         if (rootFile.isDirectory()) {
             logger.fine("addToDirTree " + rootFile.getName());
-            dirTree.put(rootFile, parentNode);
-            for (File file : rootFile.listFiles()) {
-                if (file.isDirectory()) {
-                    addToDirTree(dirTree, file, rootFile);
+            File[] files = rootFile.listFiles();
+            if (files == null) {
+                //exceptional case, do not add the directory into the tree
+                logger.fine("addToDirTree - skipped " + rootFile.getName());
+            } else {
+                dirTree.put(rootFile, parentNode);
+
+                for (File file : files) {
+                    if (file.isDirectory() /*&& file.canRead() && !file.isHidden()*/) {
+                        addToDirTree(dirTree, file, rootFile);
+                    }
                 }
             }
 
         } else {
-            logger.warning("root file for ToolCover.addToDirTree is not a pointer "
-                    + "to a directory. Nothing to process.");
+            logger.warning("root file for ToolCover.addToDirTree is not a directory. Nothing to process.");
         }
 
     }
@@ -158,8 +171,7 @@ public class ToolCover {
             return scenario;
 
         } catch (JAXBException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.log(Level.SEVERE, e.getMessage(), e);
         }
 
         // if it is not returned before
@@ -169,27 +181,78 @@ public class ToolCover {
     
     public void runScenario(ScenarioConfig scenario) {
         List<ScenarioConfig.Step> steps = scenario.getStep();
+        ConcurrentHashMap<String, Future<Boolean>> stepsStatus = new ConcurrentHashMap<>();
+        
+        ExecutorService es = Executors.newCachedThreadPool();
+        
         for (Step step : steps) {
-            String stepID = step.getStepID(); //TODO need to track status of the step to check the sequence - nextto
+            String stepID = step.getStepID(); 
             File file = new File(step.getDirectory());
             String type = step.getPlugin();
-            String outputDir = step.getOutput(); //TODO apply for reporting
-            
-            switch (step.getAction()) {
-            case "Process":
-                process(file, type);
-                break;
-            case "Report":
-                report(file, type, outputDir);
-                break;
-            case "Aggregate":
-                aggregate(file, type);
-                break;
+            String outputDir = step.getOutput();
+            String nextTo = step.getNextto();
 
-            default:
-                break;
-            }
+            Callable<Boolean> stepCallable = new Callable<Boolean>() {
+
+                @Override
+                public Boolean call() throws Exception {
+                    logger.info(step.toString() + " called.");
+
+                    if ((nextTo != null) && (!nextTo.isEmpty())) {
+                        //wait for the predecessor completion
+                        Future<Boolean> previous = stepsStatus.get(nextTo);
+                        if (previous != null) {
+                            logger.info(step.toString() + " starts waiting for previous.");
+                            previous.get(); //wait for completion
+                            logger.info(step.toString() + " previous complete.");
+                        } else {
+                            logger.info(step.toString() + " previous is not found.");
+                        }
+                    }
+
+                    logger.info(step.toString() + " excutions started.");
+
+                    try {
+                        switch (step.getAction()) {
+                        case "Process":
+                            process(file, type);
+                            break;
+                        case "Report":
+                            report(file, type, outputDir);
+                            break;
+                        case "Aggregate":
+                            aggregate(file, type);
+                            break;
+
+                        default:
+                            break;
+                        }
+                    } catch (Exception e) {
+                        logger.log(Level.SEVERE, e.getMessage(), e);
+                    }
+                    logger.info(toString() + " complete.");
+
+                    return true;
+                }
+            };
+            
+            
+            //TODO lock stepsStatus to start and register a task
+            Future<Boolean> future = es.submit(stepCallable);
+            stepsStatus.put(stepID, future);
+            
         }
+        
+        es.shutdown();
+        
+        try {
+            logger.info("waiting for completion");
+            es.awaitTermination(1, TimeUnit.HOURS);
+            logger.info("completion...");
+        } catch (InterruptedException e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
+        }
+        logger.info("executor service is completed");
     }
 
 }

@@ -33,7 +33,6 @@ public class App {
             fh.setFormatter(new Formatter() {
                 @Override
                 public String format(LogRecord record) {
-                    // TODO Auto-generated method stub
                     return String.format("%d %s %n", record.getMillis(),
                             record.getMessage());
                 }

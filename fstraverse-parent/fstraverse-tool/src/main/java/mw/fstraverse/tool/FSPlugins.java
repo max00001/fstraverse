@@ -9,6 +9,7 @@ import java.net.URLClassLoader;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.bind.JAXBContext;
@@ -35,8 +36,7 @@ public class FSPlugins {
             try {
                 this.jarURL = new URL(jarURL);
             } catch (MalformedURLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                logger.log(Level.SEVERE, e.getMessage(), e);
             }
             this.pluginClass = pluginClass;
         }
@@ -99,8 +99,7 @@ public class FSPlugins {
                                 .getPluginClass()));
             }
         } catch (JAXBException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.log(Level.SEVERE, e.getMessage(), e);
         }
     }
 

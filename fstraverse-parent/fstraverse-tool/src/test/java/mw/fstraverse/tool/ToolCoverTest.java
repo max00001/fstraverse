@@ -24,7 +24,7 @@ public class ToolCoverTest {
     private String printableFormOfResult = "abc";
     FSInfoStorage dirTree;
     String testType = "Test"; //plugin type for tests
-    FSProcessor fsProcessor = new FSProcessor() {
+  /*  FSProcessor fsProcessor = new FSProcessor() {
 
         @Override
         public FProcResult process(File file) {
@@ -60,15 +60,16 @@ public class ToolCoverTest {
                 }
             };
         }
-    };
+    };*/
+    FSProcessor fsProcessor = mock(FSProcessor.class);
     FProcReport fpReport = mock(FProcReport.class);
+    FProcResult fpResult = mock(FProcResult.class);
     
     @Before
     public void setUp() throws Exception {
         try {
             toolCover = new ToolCover();
             
-            //TODO replace fsPlugins by a mock object
             Field field = toolCover.getClass().getDeclaredField("fsPlugins");
             field.setAccessible(true);
             mockFSPlugins = mock(FSPlugins.class);
@@ -77,6 +78,8 @@ public class ToolCoverTest {
             //mock behavior
             when(mockFSPlugins.newFSProcessor(testType)).thenReturn(fsProcessor);
             when(mockFSPlugins.newFProcReport(testType)).thenReturn(fpReport);
+            when(fsProcessor.process(any())).thenReturn(fpResult);
+            when(fpResult.getPrintableForm()).thenReturn(printableFormOfResult);
 
             
             file = new File(".");
@@ -135,6 +138,7 @@ public class ToolCoverTest {
     public void testAggregate() {
         toolCover.aggregate(file, testType);
         //nothing to assert in this implementation. Test just simple run without checks
+        //verify(sa.agg) - check if aggregate method of dirTree is called
     }
 
     @Test

@@ -17,13 +17,14 @@
 		<plugin>Count</plugin>
 		<action>Report</action>
 		<output>d:\tmp\count01\</output>
+		<nextto>Processing-Count</nextto>
 	</step>
 	<step>
 		<stepID>Aggregating-Count</stepID>
 		<directory>d:\SampleDir</directory>
 		<plugin>Count</plugin>
 		<action>Aggregate</action>
-		<nextto>Processing-Count</nextto>
+		<nextto>Reporting-Count01</nextto>
 	</step>
 	<step>
 		<stepID>Reporting-Count02</stepID>
@@ -31,11 +32,40 @@
 		<plugin>Count</plugin>
 		<action>Report</action>
 		<output>d:\tmp\count02\</output>
+		<nextto>Aggregating-Count</nextto>
 	</step>
 	<step>
-		<stepID>Processing-Sample</stepID>
+		<stepID>Processing-Sample02</stepID>
 		<directory>d:\tmp\</directory>
 		<plugin>Sample</plugin>
 		<action>Process</action>
 	</step>
+    <step>
+        <stepID>Processing-CountD</stepID>
+        <directory>D:\</directory>
+        <plugin>Count</plugin>
+        <action>Process</action>
+    </step>
+    <step>
+        <stepID>Reporting-Count01D</stepID>
+        <directory>D:\</directory>
+        <plugin>Count</plugin>
+        <action>Report</action>
+        <output>d:\tmp\count01d\</output>
+        <nextto>Processing-CountD</nextto>
+    </step>
+    <step>
+        <stepID>Processing-CountC</stepID>
+        <directory>C:\</directory>
+        <plugin>Count</plugin>
+        <action>Process</action>
+    </step>
+    <step>
+        <stepID>Reporting-Count01C</stepID>
+        <directory>C:\</directory>
+        <plugin>Count</plugin>
+        <action>Report</action>
+        <output>d:\tmp\count01c\</output>
+        <nextto>Processing-CountC</nextto>
+    </step>
 </scenario>

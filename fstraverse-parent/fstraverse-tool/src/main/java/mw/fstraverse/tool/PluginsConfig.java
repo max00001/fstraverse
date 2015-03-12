@@ -111,8 +111,6 @@ public class PluginsConfig {
     public static class Plugin {
 
         public Plugin() {
-            super();
-            // TODO Auto-generated constructor stub
         }
 
         @Override
