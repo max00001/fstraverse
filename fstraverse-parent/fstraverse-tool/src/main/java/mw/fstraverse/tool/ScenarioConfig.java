@@ -35,6 +35,7 @@ import javax.xml.bind.annotation.XmlType;
 *                 &lt;sequence>
 *                   &lt;element name="stepID" type="{http://www.w3.org/2001/XMLSchema}string"/>
 *                   &lt;element name="directory" type="{http://www.w3.org/2001/XMLSchema}string"/>
+*                   &lt;element name="reportabout" type="{http://www.w3.org/2001/XMLSchema}string"/>
 *                   &lt;element name="plugin" type="{http://www.w3.org/2001/XMLSchema}string"/>
 *                   &lt;element name="action" type="{http://www.w3.org/2001/XMLSchema}string"/>
 *                   &lt;element name="output" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
@@ -103,6 +104,7 @@ public class ScenarioConfig {
   *       &lt;sequence>
   *         &lt;element name="stepID" type="{http://www.w3.org/2001/XMLSchema}string"/>
   *         &lt;element name="directory" type="{http://www.w3.org/2001/XMLSchema}string"/>
+  *         &lt;element name="reportabout" type="{http://www.w3.org/2001/XMLSchema}string"/>
   *         &lt;element name="plugin" type="{http://www.w3.org/2001/XMLSchema}string"/>
   *         &lt;element name="action" type="{http://www.w3.org/2001/XMLSchema}string"/>
   *         &lt;element name="output" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
@@ -119,6 +121,7 @@ public class ScenarioConfig {
  @XmlType(name = "", propOrder = {
      "stepID",
      "directory",
+     "reportabout",
      "plugin",
      "action",
      "output",
@@ -129,6 +132,7 @@ public class ScenarioConfig {
      @Override
     public String toString() {
         return "Step [stepID=" + stepID + ", directory=" + directory
+                + ", reportabout=" + reportabout
                 + ", plugin=" + plugin + ", action=" + action + ", output="
                 + output + ", nextto=" + nextto + "]";
     }
@@ -140,6 +144,7 @@ public class ScenarioConfig {
      protected String stepID;
      @XmlElement(required = true)
      protected String directory;
+     protected String reportabout;
      @XmlElement(required = true)
      protected String plugin;
      @XmlElement(required = true)
@@ -193,6 +198,30 @@ public class ScenarioConfig {
       */
      public void setDirectory(String value) {
          this.directory = value;
+     }
+
+     /**
+      * Gets the value of the reportabout property.
+      * 
+      * @return
+      *     possible object is
+      *     {@link String }
+      *     
+      */
+     public String getReportabout() {
+         return reportabout;
+     }
+
+     /**
+      * Sets the value of the reportabout property.
+      * 
+      * @param value
+      *     allowed object is
+      *     {@link String }
+      *     
+      */
+     public void setReportabout(String value) {
+         this.reportabout = value;
      }
 
      /**

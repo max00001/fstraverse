@@ -7,6 +7,7 @@ import java.util.Set;
 public interface FSInfoStorage {
 
     public Set<Map.Entry<File, FPInfoStorage>> getIterator();
+    public Set<Map.Entry<File, FPInfoStorage>> tailMapIterator(File fromFile);
     public Set<File> getDescFileIterator();
     public Set<File> getFileIterator();
     public FPInfoStorage put(File file, File parentNode);

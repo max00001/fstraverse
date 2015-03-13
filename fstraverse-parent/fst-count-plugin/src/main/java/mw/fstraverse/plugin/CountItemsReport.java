@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.Calendar;
+import java.util.Map;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -41,7 +42,10 @@ public class CountItemsReport implements FProcReport {
     }
 
     @Override
-    public String report(FSInfoStorage fsInfoStorage, File file, String outputFileName) {
+    public String report(FSInfoStorage fsInfoStorage, File file, File reportabout, String outputFileName) {
+        if (reportabout == null) {
+            reportabout = file;
+        }
         File outputFile = new File(outputFileName);
         if (outputFile.isDirectory() || !outputFile.exists()) {
             // add report.html as filename
@@ -63,21 +67,40 @@ public class CountItemsReport implements FProcReport {
             //xtw.writeNamespace("html", "http://www.w3.org/TR/REC-html40");
                 xtw.writeStartElement("head");
                     xtw.writeStartElement("title");
-                        xtw.writeCharacters(file.getName());
+                        xtw.writeCharacters(reportabout.getName());
                     xtw.writeEndElement();
                 xtw.writeEndElement();
                 xtw.writeStartElement("body");
                     xtw.writeStartElement("h1");
                         xtw.writeCharacters("It's a report about ");
                         xtw.writeStartElement("a");
-                            xtw.writeAttribute("href", file.toURI().toString());
-                            xtw.writeCharacters(file.getAbsolutePath());
+                            xtw.writeAttribute("href", reportabout.toURI().toString());
+                            xtw.writeCharacters(reportabout.getAbsolutePath());
                         xtw.writeEndElement();
                     xtw.writeEndElement();
-                    xtw.writeStartElement("p");                        
-                        FProcResult result = fsInfoStorage.get(file).get(type);
-                        xtw.writeCharacters(result.getPrintableForm());
-                    xtw.writeEndElement();
+                    for (Map.Entry<File, FPInfoStorage> entry : fsInfoStorage.tailMapIterator(reportabout)) {
+                        if ((reportabout.equals(entry.getKey())) || 
+                                isParent(fsInfoStorage, reportabout, 
+                                        entry.getValue())) {
+                            xtw.writeStartElement("p");                        
+                                xtw.writeStartElement("a");
+                                    xtw.writeAttribute("href", entry.getKey().toURI().toString());
+                                    if (reportabout.equals(entry.getKey())) {
+                                        xtw.writeCharacters(entry.getKey().getAbsolutePath());                                        
+                                    } else {
+                                        xtw.writeCharacters(reportabout.toPath().relativize(entry.getKey().toPath()).toString());
+                                    }
+                                    
+                                xtw.writeEndElement();
+                                xtw.writeCharacters(" ");
+                                FProcResult result = entry.getValue().get(type);
+                                xtw.writeCharacters(result.getPrintableForm());
+                            xtw.writeEndElement();
+                        } else {
+                            break; //iteration by storage
+                        }
+                    }
+                    
                 xtw.writeEndElement();
             xtw.writeEndElement();
             xtw.writeEndDocument();
@@ -93,6 +116,19 @@ public class CountItemsReport implements FProcReport {
         }
         
         return outputFile.toString();
+    }
+
+    private boolean isParent(FSInfoStorage fsInfoStorage, File file, FPInfoStorage value) {
+        // returns true if value refers to the file as to parent or its parent refers to file etc.
+        File parent = value.getParentNode();
+        while (parent != null) {
+            if (parent.equals(file)) {
+                return true;
+            } else {
+                parent = fsInfoStorage.get(parent).getParentNode();
+            }
+        }
+        return false;
     }
 
 }

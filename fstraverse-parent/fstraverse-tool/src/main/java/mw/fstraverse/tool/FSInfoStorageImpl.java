@@ -2,6 +2,7 @@ package mw.fstraverse.tool;
 
 import java.io.File;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
@@ -21,11 +22,18 @@ public class FSInfoStorageImpl implements FSInfoStorage {
         this.dirTree = new ConcurrentSkipListMap<>();
     }
 
+    
     @Override
     public Set<Map.Entry<File, FPInfoStorage>> getIterator() {
         return dirTree.entrySet();
     }
 
+    @Override
+    public Set<Entry<File, FPInfoStorage>> tailMapIterator(File fromFile) {
+        return dirTree.tailMap(fromFile).entrySet();
+    }
+
+    
     @Override
     public Set<File> getDescFileIterator() {
         return dirTree.descendingKeySet();
@@ -92,5 +100,7 @@ public class FSInfoStorageImpl implements FSInfoStorage {
         }
 
     }
+
+
 
 }

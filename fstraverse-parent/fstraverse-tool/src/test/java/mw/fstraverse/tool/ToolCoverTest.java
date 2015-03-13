@@ -21,6 +21,7 @@ public class ToolCoverTest {
     ToolCover toolCover;
     FSPlugins mockFSPlugins;
     private File file;
+    private File reportAbout;
     private String printableFormOfResult = "abc";
     FSInfoStorage dirTree;
     String testType = "Test"; //plugin type for tests
@@ -83,6 +84,7 @@ public class ToolCoverTest {
 
             
             file = new File(".");
+            reportAbout = new File(".");
             toolCover.process(file, testType);
 
             Method method;
@@ -143,7 +145,7 @@ public class ToolCoverTest {
 
     @Test
     public void testReport() {
-        toolCover.report(file, testType, System.getProperty("java.io.tmpdir"));
+        toolCover.report(file, reportAbout, testType, System.getProperty("java.io.tmpdir"));
         fail("Not yet implemented");
     }
 

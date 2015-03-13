@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -123,7 +124,7 @@ public class ToolCover {
     }
 
 
-    public void report(File file, String type, String outputDir) {
+    public void report(File file, File reportabout, String type, String outputDir) {
         FSInfoStorage dirTree = storages.get(file);
         if (dirTree == null) {
             logger.warning("cannot compile report " + type + " for " + file
@@ -136,7 +137,7 @@ public class ToolCover {
             FProcReport fProcReport = fsPlugins.newFProcReport(
                     type);
             if (fProcReport != null) {
-                String report = fProcReport.report(dirTree, file, outputDir);
+                String report = fProcReport.report(dirTree, file, reportabout, outputDir);
                 logger.info("Report: " + report);
             } else {
                 logger.warning("plugin-reporter is not defined for " + type);
@@ -188,6 +189,10 @@ public class ToolCover {
         for (Step step : steps) {
             String stepID = step.getStepID(); 
             File file = new File(step.getDirectory());
+            File reportabout = (((step.getReportabout() == null) || 
+                    (step.getReportabout().isEmpty())) ? 
+                            null: new File(step.getReportabout()));
+            
             String type = step.getPlugin();
             String outputDir = step.getOutput();
             String nextTo = step.getNextto();
@@ -218,7 +223,7 @@ public class ToolCover {
                             process(file, type);
                             break;
                         case "Report":
-                            report(file, type, outputDir);
+                            report(file, reportabout, type, outputDir);
                             break;
                         case "Aggregate":
                             aggregate(file, type);
@@ -252,6 +257,19 @@ public class ToolCover {
         } catch (InterruptedException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
         }
+        
+        for (Step step2 : steps) {
+            try {
+                logger.info(step2.toString() + " complete with result: " + stepsStatus.get(step2.getStepID()).get());
+            } catch (InterruptedException e) {
+                logger.warning(step2.toString() + " - interrupted.");
+                logger.log(Level.WARNING, e.getMessage(), e);
+            } catch (ExecutionException e) {
+                logger.warning(step2.toString() + " - failed.");
+                logger.log(Level.WARNING, e.getMessage(), e);
+            }
+
+        } 
         logger.info("executor service is completed");
     }
 

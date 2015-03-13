@@ -29,6 +29,7 @@
 	<step>
 		<stepID>Reporting-Count02</stepID>
 		<directory>d:\SampleDir</directory>
+		<reportabout>D:\SampleDir\7z920_extra</reportabout>
 		<plugin>Count</plugin>
 		<action>Report</action>
 		<output>d:\tmp\count02\</output>
@@ -49,6 +50,7 @@
     <step>
         <stepID>Reporting-Count01D</stepID>
         <directory>D:\</directory>
+        <reportabout>D:\maxwhite\Trainings\JavaSE_Mera</reportabout>
         <plugin>Count</plugin>
         <action>Report</action>
         <output>d:\tmp\count01d\</output>
@@ -63,6 +65,7 @@
     <step>
         <stepID>Reporting-Count01C</stepID>
         <directory>C:\</directory>
+        <reportabout>C:\env\docs</reportabout>
         <plugin>Count</plugin>
         <action>Report</action>
         <output>d:\tmp\count01c\</output>
