@@ -4,9 +4,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.FileSystems;
-import java.nio.file.Path;
 import java.util.Calendar;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -20,6 +21,8 @@ import mw.fstraverse.tool.FSInfoStorage;
 public class CountItemsReport implements FProcReport {
 
     String type;
+    private static Logger logger = Logger.getLogger(CountItemsReport.class
+            .getPackage().getName());
 
     private CountItemsReport() {
     }
@@ -27,18 +30,6 @@ public class CountItemsReport implements FProcReport {
     public CountItemsReport(String type) {
         super();
         this.type = type;
-    }
-
-    @Override
-    public void aggregate() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public String getPrintableString(FProcResult fProcResult) {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     @Override
@@ -108,11 +99,9 @@ public class CountItemsReport implements FProcReport {
             xtw.flush();
             xtw.close();    
         } catch (XMLStreamException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.log(Level.SEVERE, e.getMessage(), e);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.log(Level.SEVERE, e.getMessage(), e);
         }
         
         return outputFile.toString();

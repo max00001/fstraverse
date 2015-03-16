@@ -9,5 +9,5 @@ public interface FProcResult {
     public boolean isAggregated();
     public void setAggregated();
     public boolean isAggregatable();
-    public void aggregate(FProcResult childResult) throws FSInfoStorageException;
+    public void aggregate(FProcResult childResult) throws FSToolException;
 }

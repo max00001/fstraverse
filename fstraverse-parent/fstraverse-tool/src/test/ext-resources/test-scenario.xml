@@ -1,0 +1,8 @@
+<scenario>
+	<step>
+		<stepID>Processing-Test01</stepID>
+		<directory>d:\SampleDir</directory>
+		<plugin>Test</plugin>
+		<action>Process</action>
+	</step>
+</scenario>

@@ -60,18 +60,17 @@ public class FSPlugins {
      */
     private ConcurrentHashMap<String, FSPlugin> pluginsMap = new ConcurrentHashMap<>();
 
-    private FSPlugins() {
+    private FSPlugins() throws FSToolException {
         initPluginsList();
     }
     
-    private File getPluginsConfigFile() {
+    private File getPluginsConfigFile() throws FSToolException {
         File file = new File("plugins.xml");
         if (!file.exists()) {
             file = new File("src/main/ext-resources/plugins.xml");
         }
         if (!file.exists()) {
-            //TODO exception
-            logger.warning("Plugins config file doesn't exist.");
+            throw new FSToolException("Plugins config file doesn't exist.");
         }
         return file;
     }
@@ -80,7 +79,8 @@ public class FSPlugins {
      * load xml list of plugins
      * write to pluginsInfoMap
      */
-    private void initPluginsList() {
+    private void initPluginsList() throws FSToolException {
+        
         File file = getPluginsConfigFile();
         JAXBContext jaxbContext;
         try {
@@ -103,7 +103,7 @@ public class FSPlugins {
         }
     }
 
-    public static synchronized FSPlugins getInstance() {
+    public static synchronized FSPlugins getInstance() throws FSToolException {
         if (instance == null) {
             instance = new FSPlugins();
         }

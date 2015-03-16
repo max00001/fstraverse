@@ -5,8 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 import java.util.logging.FileHandler;
 import java.util.logging.Formatter;
@@ -39,14 +37,24 @@ public class App {
             });
             logger.addHandler(fh);
         } catch (SecurityException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, e.getMessage(), e);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, e.getMessage(), e);
         }
-        ToolCover toolCover = new ToolCover();
-        ScenarioConfig scenario = toolCover.initScenario();
-        toolCover.runScenario(scenario);
-
+        
+        String filename;
+        if (args.length > 0) {
+            filename = args[0];
+        } else {
+            filename = props.getProperty("scenario.filename", "");
+        }
+        try {
+            ToolCover toolCover = new ToolCover(filename);
+            toolCover.runScenario();
+        }
+        catch (FSToolException e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
+        }
         logger.info("App execution complete.");
 
     }
@@ -66,9 +74,9 @@ public class App {
             inputStream = getConfigFile();
             props.load(inputStream);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, e.getMessage(), e);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, e.getMessage(), e);
         }
     }
 

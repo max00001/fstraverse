@@ -15,5 +15,5 @@ public interface FSInfoStorage {
     public FPInfoStorage get(File file);
     public void clear();
     public File getRootFile();
-    public void aggregate(String type) throws FSInfoStorageException;
+    public void aggregate(String type) throws FSToolException;
 }

@@ -6,6 +6,8 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -18,6 +20,8 @@ import static org.mockito.Mockito.*;
 
 public class ToolCoverTest {
 
+    static final String testScenarioFileName = "./src/test/ext-resources/test-scenario.xml";
+    
     ToolCover toolCover;
     FSPlugins mockFSPlugins;
     private File file;
@@ -68,8 +72,45 @@ public class ToolCoverTest {
     
     @Before
     public void setUp() throws Exception {
+    }
+
+    @After
+    public void tearDown() throws Exception {
+    }
+
+    @Test
+    public void testInitScenario() {
+        ToolCover toolCover;
         try {
-            toolCover = new ToolCover();
+            toolCover = new ToolCover(testScenarioFileName);
+            Field field = toolCover.getClass().getDeclaredField("scenario");
+            field.setAccessible(true);        
+            ScenarioConfig scenario = (ScenarioConfig)field.get(toolCover); 
+            if (scenario.getStep().size() == 0) {
+                fail("No steps found in the scenario.");
+            }
+        } catch (FSToolException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (SecurityException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testRunScenario() {
+        try {
+            toolCover = new ToolCover(testScenarioFileName);
             
             Field field = toolCover.getClass().getDeclaredField("fsPlugins");
             field.setAccessible(true);
@@ -82,44 +123,19 @@ public class ToolCoverTest {
             when(fsProcessor.process(any())).thenReturn(fpResult);
             when(fpResult.getPrintableForm()).thenReturn(printableFormOfResult);
 
+            toolCover.runScenario();
             
-            file = new File(".");
-            reportAbout = new File(".");
-            toolCover.process(file, testType);
+            file = new File("d:/SampleDir");
 
             Method method;
             method = ToolCover.class
                     .getDeclaredMethod("getDirTree", File.class);
             method.setAccessible(true);
             dirTree = (FSInfoStorage) method.invoke(toolCover, file);
-        } catch (NoSuchMethodException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
 
-    @After
-    public void tearDown() throws Exception {
-    }
-
-    @Test
-    public void testInitScenario() {
-        ToolCover toolCover = new ToolCover();
-        ScenarioConfig scenario = toolCover.initScenario();
-        if (scenario.getStep().size() == 0) {
-            fail("No steps found in the scenario.");
-        }
-    }
-
-    @Test
-    public void testProcess() {
-        try {
+            
+            
+            
             assertTrue(dirTree.getIterator().size() > 0);
             assertEquals(file, dirTree.getRootFile());
             Set<Entry<String, FProcResult>> rrr = dirTree
@@ -132,26 +148,24 @@ public class ToolCoverTest {
         } catch (IllegalArgumentException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (FSToolException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
 
     }
 
-    @Test
-    public void testAggregate() {
-        toolCover.aggregate(file, testType);
-        //nothing to assert in this implementation. Test just simple run without checks
-        //verify(sa.agg) - check if aggregate method of dirTree is called
-    }
-
-    @Test
-    public void testReport() {
-        toolCover.report(file, reportAbout, testType, System.getProperty("java.io.tmpdir"));
-        fail("Not yet implemented");
-    }
-
-    @Test
-    public void testRunScenario() {
-        fail("Not yet implemented");
-    }
 
 }

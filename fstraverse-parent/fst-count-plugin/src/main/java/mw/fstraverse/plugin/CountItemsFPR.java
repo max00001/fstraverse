@@ -19,7 +19,6 @@ public class CountItemsFPR implements FProcResult {
      */
     @Override
     public String getPrintableForm() {
-        // TODO Auto-generated method stub
         return "Sub-directories: " + dirs + " Files: " + files + 
                 (isAggregated()?" a":"");
     }

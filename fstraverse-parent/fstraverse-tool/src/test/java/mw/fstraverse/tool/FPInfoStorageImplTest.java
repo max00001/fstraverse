@@ -61,7 +61,7 @@ public class FPInfoStorageImplTest {
 
                     @Override
                     public void aggregate(FProcResult childResult)
-                            throws FSInfoStorageException {
+                            throws FSToolException {
                         // nothing
 
                     }
@@ -92,7 +92,7 @@ public class FPInfoStorageImplTest {
             
             @Override
             public void aggregate(FProcResult childResult)
-                    throws FSInfoStorageException {
+                    throws FSToolException {
                 //nothing to implement
             }
         };

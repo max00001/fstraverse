@@ -59,7 +59,6 @@ public class FSInfoStorageImpl implements FSInfoStorage {
 
     @Override
     public FPInfoStorage get(File file) {
-        // TODO Auto-generated method stub
         return dirTree.get(file);
     }
 
@@ -74,7 +73,7 @@ public class FSInfoStorageImpl implements FSInfoStorage {
     }
 
     @Override
-    public void aggregate(String type) throws FSInfoStorageException {
+    public void aggregate(String type) throws FSToolException {
         for (Map.Entry<File, FPInfoStorage> entry : dirTree.descendingMap()
                 .entrySet()) {
             FPInfoStorage value = entry.getValue();
@@ -84,8 +83,7 @@ public class FSInfoStorageImpl implements FSInfoStorage {
                     FProcResult parentResult = dirTree.get(
                             value.getParentNode()).get(type);
                     if (parentResult == null) {
-                        // TODO ?exception
-                        throw new FSInfoStorageException("Parent result of "
+                        throw new FSToolException("Parent result of "
                                 + type + " is not found for node "
                                 + entry.getKey().getName());
                     } else {

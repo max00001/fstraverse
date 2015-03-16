@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -32,12 +31,19 @@ public class ToolCover {
     private static Logger logger = Logger.getLogger(ToolCover.class
             .getPackage().getName());
     private ConcurrentHashMap<File, FSInfoStorage> storages = new ConcurrentHashMap<>();
-    private FSPlugins fsPlugins = FSPlugins.getInstance(); //for testing purposes this is a class member
+    private FSPlugins fsPlugins; //for testing purposes this is a class member
+    private ScenarioConfig scenario;
     
     
-    public CountDownLatch latch;
-
     // FSInfoStorage dirTree = new FSInfoStorageImpl();
+
+    /**
+     * 
+     */
+    public ToolCover(String filename) throws FSToolException {
+        fsPlugins = FSPlugins.getInstance();
+        initScenario(filename);
+    }
 
     /**
      * 
@@ -48,7 +54,7 @@ public class ToolCover {
      * @param fsProcessor
      * @return nothing
      */
-    public void process(File rootFile, String type) {
+    private void process(File rootFile, String type) {
         FSInfoStorage dirTree = getDirTree(rootFile);
         for (File file : dirTree.getFileIterator()) {
             FProcResult fpResult = fsPlugins.newFSProcessor(type).process(file);
@@ -64,7 +70,7 @@ public class ToolCover {
 
     }
     
-    public void aggregate(File rootFile, String type) {
+    private void aggregate(File rootFile, String type) {
         FSInfoStorage dirTree = storages.get(rootFile);
         if (dirTree == null) {
             logger.warning("cannot aggregate report " + type + " for " + rootFile
@@ -72,7 +78,7 @@ public class ToolCover {
         } else {
             try {
                 dirTree.aggregate(type);
-            } catch (FSInfoStorageException e) {
+            } catch (FSToolException e) {
                 logger.log(Level.SEVERE, e.getMessage(), e);
             }
         }
@@ -124,7 +130,7 @@ public class ToolCover {
     }
 
 
-    public void report(File file, File reportabout, String type, String outputDir) {
+    private void report(File file, File reportabout, String type, String outputDir) {
         FSInfoStorage dirTree = storages.get(file);
         if (dirTree == null) {
             logger.warning("cannot compile report " + type + " for " + file
@@ -146,41 +152,55 @@ public class ToolCover {
 
     }
     
-    private File getScenarioConfigFile() {
-        File file = new File("scenario.xml");
+    private File getScenarioConfigFile(String filename) throws FSToolException {
+        File file = null;
+        if ((filename == null) || (filename.isEmpty())) {
+            logger.info("Scenario filename is not provided via command line or config file.");
+        } else {
+            logger.info("Scenario loading. Filename: " + filename);
+            file = new File(filename);
+        }
+        
+        if ((file == null) || (!file.exists())) {
+            logger.info("Loading default \"scenario.xml\"");
+            file = new File("scenario.xml");
+        }
+        
         if (!file.exists()) {
+            logger.info("Loading default \"src/main/ext-resources/scenario.xml\"");
             file = new File("src/main/ext-resources/scenario.xml");
         }
         if (!file.exists()) {
-            //TODO exception
-            logger.warning("Scenario config file doesn't exist.");
+            FSToolException e = new FSToolException("Scenario config file cannot be found.");
+            logger.throwing(this.getClass().getName(), "getScenarioConfigFile", e);
+            throw e;
         }
         return file;
     }
 
 
-    public ScenarioConfig initScenario() {
-        // TODO load correct file
-        File file = getScenarioConfigFile();
+    private void initScenario(String filename) throws FSToolException {
+        File file = getScenarioConfigFile(filename);
         JAXBContext jaxbContext;
         try {
             jaxbContext = JAXBContext.newInstance(ScenarioConfig.class);
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
             // jaxbUnmarshaller.setValidating(true);
-            ScenarioConfig scenario = (ScenarioConfig) jaxbUnmarshaller
+            ScenarioConfig scenarioConfig = (ScenarioConfig) jaxbUnmarshaller
                     .unmarshal(file);
-            return scenario;
+            scenario = scenarioConfig;
 
         } catch (JAXBException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
         }
 
-        // if it is not returned before
-        return null;
 
     }
     
-    public void runScenario(ScenarioConfig scenario) {
+    public void runScenario() {
+        if (scenario == null) {
+            logger.warning("No scenario initialized");
+        }
         List<ScenarioConfig.Step> steps = scenario.getStep();
         ConcurrentHashMap<String, Future<Boolean>> stepsStatus = new ConcurrentHashMap<>();
         
